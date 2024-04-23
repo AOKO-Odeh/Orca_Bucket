@@ -1,0 +1,34 @@
+
+
+import pandas as pd
+import os
+
+def read_csv(file_path):
+    # Read the CSV into a DataFrame, ensuring all data is read as strings
+    df = pd.read_csv(file_path, dtype=str)
+    return df
+
+def write_to_excel(df, output_path):
+    # Use ExcelWriter within a 'with' block for safe writing and automatic file saving
+    with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Sheet1')
+
+def process_csv_to_excel(directory_path, output_directory):
+    # List all files in the specified directory
+    for filename in os.listdir(directory_path):
+        if filename.endswith(".csv"):  # Check for files ending with .csv
+            csv_path = os.path.join(directory_path, filename)
+            excel_path = os.path.join(output_directory, os.path.splitext(filename)[0] + '.xlsx')
+            
+            # Read data from CSV
+            data = read_csv(csv_path)
+            
+            # Write data to Excel, ensuring all fields are text
+            write_to_excel(data, excel_path)
+            print(f"Processed {filename} into {excel_path}")
+
+# Example paths
+directory_path = '/Users/I568380/downloads/Orca reps'
+output_directory = '/Users/I568380/downloads/Orca reps'
+
+process_csv_to_excel(directory_path, output_directory)
